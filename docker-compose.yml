@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  mongodb:
+    image: mongo
+    container_name: mongodb
+    ports:
+      - "27017:27017"
+    networks:
+      - backend
+
+  auth-service:
+    build: ./auth-service
+    container_name: auth-service
+    env_file:
+      - ./auth-service/.env
+    ports:
+      - "5000:5000"
+    networks:
+      - backend
+
+  rekomendasi-service:
+    build: ./rekomendasi-service
+    container_name: rekomendasi-service
+    env_file:
+      - ./rekomendasi-service/.env
+    ports:
+      - "5001:5001"
+    networks:
+      - backend
+
+  api-gateway:
+    build: ./api-gateway
+    container_name: api-gateway
+    ports:
+      - "8080:80"
+    depends_on:
+      - auth-service
+      - rekomendasi-service
+    networks:
+      - backend
+
+networks:
+  backend:
