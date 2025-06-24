@@ -1,45 +1,15 @@
-const Kandidat = require('../models/Kandidat');
+const express = require('express');
+const router = express.Router();
+const {
+  rekomendasiJabatan,
+  riwayatRekomendasi
+} = require('../controllers/rekomendasiControllers');
+const apiKeyMiddleware = require('../middleware/apiKeyMiddleware');
 
-exports.rekomendasiJabatan = async (req, res) => {
-  const data = req.body;
-  const userId = req.user.id;
-  let jabatan = 'Staff Umum';
+// Endpoint untuk mendapatkan rekomendasi
+router.post('/', apiKeyMiddleware, rekomendasiJabatan);
 
-  if (
-    data.pendidikan === 'IT' &&
-    data.pengalaman >= 3 &&
-    data.kinerja >= 80 &&
-    data.kepemimpinan &&
-    data.disiplin >= 75
-  ) {
-    jabatan = 'Lead Developer';
-  } else if (
-    data.pendidikan === 'Manajemen' &&
-    data.kepemimpinan &&
-    data.pengalaman >= 5 &&
-    data.lamaBekerja >= 4
-  ) {
-    jabatan = 'Manajer Operasional';
-  } else if (
-    data.sertifikasi.includes('Project Management') &&
-    data.softSkill.includes('Komunikasi') &&
-    data.kinerja >= 70
-  ) {
-    jabatan = 'Koordinator Proyek';
-  } else if (
-    data.pendidikan === 'Teknik' &&
-    data.pengalaman >= 2 &&
-    data.kinerja >= 60
-  ) {
-    jabatan = 'Teknisi Senior';
-  }
+// Endpoint untuk melihat riwayat rekomendasi berdasarkan API key
+router.get('/riwayat', apiKeyMiddleware, riwayatRekomendasi);
 
-  await Kandidat.create({ ...data, userId, hasilRekomendasi: jabatan });
-
-  res.json({ jabatan });
-};
-
-exports.histori = async (req, res) => {
-  const histori = await Kandidat.find({ userId: req.user.id }).sort({ createdAt: -1 });
-  res.json(histori);
-};
+module.exports = router;

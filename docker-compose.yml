@@ -1,33 +1,33 @@
 version: '3.8'
 
 services:
-  mongodb:
+  mongo:
     image: mongo
-    container_name: mongodb
+    container_name: mongo
     ports:
       - "27017:27017"
-    networks:
-      - backend
+    volumes:
+      - mongo-data:/data/db
 
   auth-service:
     build: ./auth-service
     container_name: auth-service
-    env_file:
-      - ./auth-service/.env
     ports:
       - "5000:5000"
-    networks:
-      - backend
+    environment:
+      - PORT=5000
+    depends_on:
+      - mongo
 
   rekomendasi-service:
     build: ./rekomendasi-service
     container_name: rekomendasi-service
-    env_file:
-      - ./rekomendasi-service/.env
     ports:
       - "5001:5001"
-    networks:
-      - backend
+    environment:
+      - PORT=5001
+    depends_on:
+      - mongo
 
   api-gateway:
     build: ./api-gateway
@@ -37,8 +37,6 @@ services:
     depends_on:
       - auth-service
       - rekomendasi-service
-    networks:
-      - backend
 
-networks:
-  backend:
+volumes:
+  mongo-data:

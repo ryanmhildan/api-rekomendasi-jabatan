@@ -1,11 +1,22 @@
 {
   "name": "rekomendasi-service",
   "version": "1.0.0",
+  "description": "Microservice untuk memberikan rekomendasi jabatan berdasarkan data kandidat.",
   "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "keywords": [],
+  "author": "ryanmhildan",
+  "license": "MIT",
   "dependencies": {
-    "dotenv": "^16.0.0",
-    "express": "^4.18.1",
-    "jsonwebtoken": "^9.0.0",
-    "mongoose": "^7.0.0"
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.4",
+    "mongoose": "^7.6.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
   }
 }

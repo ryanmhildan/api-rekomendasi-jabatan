@@ -1,7 +1,6 @@
 const mongoose = require('mongoose');
 
 const kandidatSchema = new mongoose.Schema({
-  userId: String,
   nama: String,
   pengalaman: Number,
   kinerja: Number,
@@ -12,7 +11,8 @@ const kandidatSchema = new mongoose.Schema({
   softSkill: [String],
   disiplin: Number,
   hasilRekomendasi: String,
-  createdAt: { type: Date, default: Date.now }
+  apiKey: String, // Tambahkan ini
+  createdAt: { type: Date, default: Date.now },
 });
 
 module.exports = mongoose.model('Kandidat', kandidatSchema);
