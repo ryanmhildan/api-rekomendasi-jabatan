@@ -1,15 +1,18 @@
+
 # 🧠 API Rekomendasi Jabatan
 
-Platform microservice berbasis Node.js + Docker untuk merekomendasikan jabatan berdasarkan data kandidat. Autentikasi menggunakan API Key.
+Platform **microservice** berbasis **Node.js + Docker** untuk memberikan **rekomendasi jabatan** berdasarkan data kandidat. Autentikasi dilakukan menggunakan **API Key**.
 
-## 🚀 Arsitektur
+---
 
-- 🐳 Docker & Docker Compose
-- 🔀 NGINX sebagai API Gateway
-- 🧩 Microservices:
-  - `auth-service`: menghasilkan dan mengelola API key
-  - `rekomendasi-service`: menghitung dan menyimpan hasil rekomendasi jabatan
-- 🗃️ MongoDB untuk penyimpanan data kandidat dan API key
+## 🚀 Arsitektur Sistem
+
+- 🐳 **Docker & Docker Compose** — untuk orkestrasi dan deployment
+- 🔀 **NGINX** — berfungsi sebagai API Gateway
+- 🧩 **Microservices**:
+  - `auth-service` — menghasilkan dan mengelola API Key
+  - `rekomendasi-service` — menghitung dan menyimpan hasil rekomendasi jabatan
+- 🗃️ **MongoDB** — menyimpan data kandidat dan histori rekomendasi
 
 ---
 
@@ -19,7 +22,7 @@ Platform microservice berbasis Node.js + Docker untuk merekomendasikan jabatan b
 
 #### `GET /auth/generate-key`
 
-- **Deskripsi**: Menghasilkan API Key unik.
+- **Deskripsi**: Menghasilkan API Key unik yang digunakan untuk mengakses layanan rekomendasi.
 - **Respons**:
   ```json
   {
@@ -27,69 +30,102 @@ Platform microservice berbasis Node.js + Docker untuk merekomendasikan jabatan b
   }
   ```
 
-# 🧠 REKOMENDASI SERVICE
+---
 
-# 🔑 Header wajib:
+### 🧠 REKOMENDASI SERVICE
 
-x-api-key: <API_KEY>
+> Semua endpoint pada layanan ini membutuhkan header `x-api-key` dengan API Key yang valid.
 
-POST /rekomendasi/hitung
-Deskripsi: Hitung jabatan berdasarkan data kandidat.
+#### `POST /rekomendasi/hitung`
 
-Body JSON:
+- **Deskripsi**: Menghitung rekomendasi jabatan berdasarkan input data kandidat.
+- **Header**:
+  ```
+  x-api-key: <API_KEY>
+  ```
+- **Body JSON**:
+  ```json
+  {
+    "nama": "Budi",
+    "pengalaman": 5,
+    "kinerja": 85,
+    "pendidikan": "IT",
+    "sertifikasi": ["Project Management"],
+    "kepemimpinan": true,
+    "lamaBekerja": 4,
+    "softSkill": ["Komunikasi"],
+    "disiplin": 80
+  }
+  ```
+- **Respons**:
+  ```json
+  {
+    "jabatan": "Lead Developer"
+  }
+  ```
 
-{
-"nama": "Budi",
-"pengalaman": 5,
-"kinerja": 85,
-"pendidikan": "IT",
-"sertifikasi": ["Project Management"],
-"kepemimpinan": true,
-"lamaBekerja": 4,
-"softSkill": ["Komunikasi"],
-"disiplin": 80
-}
-Respons:
+---
 
-{ "jabatan": "Lead Developer" }
-GET /rekomendasi/riwayat
-Deskripsi: Melihat histori rekomendasi berdasarkan API key.
+#### `GET /rekomendasi/riwayat`
 
-Query Opsional:
+- **Deskripsi**: Melihat histori hasil rekomendasi berdasarkan API Key.
+- **Query Opsional**:
+  - `nama`: Filter berdasarkan nama kandidat
+  - `tanggalMulai`, `tanggalAkhir`: Filter berdasarkan rentang tanggal (format `YYYY-MM-DD`)
+- **Contoh**:
+  ```
+  GET /rekomendasi/riwayat?nama=Budi&tanggalMulai=2025-06-01&tanggalAkhir=2025-06-30
+  ```
+- **Respons**:
+  ```json
+  [
+    {
+      "nama": "Budi",
+      "hasilRekomendasi": "Lead Developer",
+      ...
+    }
+  ]
+  ```
 
-nama: filter berdasarkan nama
+---
 
-tanggalMulai, tanggalAkhir: filter berdasarkan tanggal (format: YYYY-MM-DD)
+## ⚙️ Menjalankan di Lokal
 
-Contoh:
+1. Jalankan perintah:
+   ```bash
+   docker-compose up --build
+   ```
 
-GET /rekomendasi/riwayat?nama=Budi&tanggalMulai=2025-06-01&tanggalAkhir=2025-06-30
-Respons:
+2. Akses layanan melalui browser atau Postman:
 
-[
-{
-"nama": "Budi",
-"hasilRekomendasi": "Lead Developer",
-...
-}
-]
+   - 🔑 Generate API Key:  
+     [http://localhost:8080/auth/generate-key](http://localhost:8080/auth/generate-key)
 
-⚙️ Menjalankan di Lokal
+   - 🧠 Hitung Rekomendasi:  
+     `POST` [http://localhost:8080/rekomendasi/hitung](http://localhost:8080/rekomendasi/hitung)
 
-docker-compose up --build
-Akses via browser / Postman:
+   - 📊 Cek Riwayat:  
+     `GET` [http://localhost:8080/rekomendasi/riwayat](http://localhost:8080/rekomendasi/riwayat)
 
-Generate API key: http://localhost:8080/auth/generate-key
+---
 
-Hitung jabatan: POST http://localhost:8080/rekomendasi/hitung
+## 📁 Struktur Folder
 
-Cek riwayat: GET http://localhost:8080/rekomendasi/riwayat
-
-📁 Struktur Folder
-
+```
 api-rekomendasi-jabatan/
-├── api-gateway/
-├── auth-service/
-├── rekomendasi-service/
-├── docker-compose.yml
-└── README.md
+├── api-gateway/           # NGINX sebagai API Gateway
+├── auth-service/          # Microservice untuk API Key
+├── rekomendasi-service/   # Microservice untuk menghitung jabatan
+├── docker-compose.yml     # File konfigurasi Docker Compose
+└── README.md              # Dokumentasi proyek
+```
+
+---
+
+## 🛠️ Teknologi yang Digunakan
+
+- Node.js
+- Express.js
+- Docker & Docker Compose
+- MongoDB
+- NGINX
