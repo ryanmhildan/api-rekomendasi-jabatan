@@ -36,9 +36,9 @@ Platform **microservice** berbasis **Node.js + Docker** untuk memberikan **rekom
 
 > Semua endpoint pada layanan ini membutuhkan header `x-api-key` dengan API Key yang valid.
 
-#### `POST /rekomendasi/hitung`
+#### `POST /rekomendasi`
 
-- **Deskripsi**: Menghitung rekomendasi jabatan berdasarkan input data kandidat.
+- **Deskripsi**: Mendapatkan rekomendasi jabatan berdasarkan input data kandidat.
 - **Header**:
   ```
   x-api-key: <API_KEY>
@@ -102,7 +102,7 @@ Platform **microservice** berbasis **Node.js + Docker** untuk memberikan **rekom
      [http://localhost:8080/auth/generate-key](http://localhost:8080/auth/generate-key)
 
    - 🧠 Hitung Rekomendasi:  
-     `POST` [http://localhost:8080/rekomendasi/hitung](http://localhost:8080/rekomendasi/hitung)
+     `POST` [http://localhost:8080/rekomendasi](http://localhost:8080/rekomendasi)
 
    - 📊 Cek Riwayat:  
      `GET` [http://localhost:8080/rekomendasi/riwayat](http://localhost:8080/rekomendasi/riwayat)
